@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f3e5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #6a1b9a;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #8e24aa;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #6a1b9a;
+        }
+    </style>
+</head>
+<body>
+    <div id="google_translate_element"></div>
+    <h1>Educational Details</h1>
+    <form id="educationForm">
+        <label for="education">Current Education Level:</label>
+        <select id="education" name="education" required>
+            <option value="High School">High School</option>
+            <option value="Undergraduate">Undergraduate</option>
+            <option value="Postgraduate">Postgraduate</option>
+            <option value="Diploma">Diploma</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label for="specialization">Specialization/Field of Study:</label>
+        <input type="text" id="specialization" name="specialization" required>
+
+        <label for="achievements">Past Experiences or Achievements:</label>
+        <textarea id="achievements" name="achievements"></textarea>
+
+        <button type="button" onclick="nextPage('random.html')">Next</button>
+    </form>
+    <script>
+        function nextPage(page) {
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            sessionStorage.setItem(form.id, JSON.stringify(data));
+            window.location.href = page;
+        }
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
