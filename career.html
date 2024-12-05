@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summary</title>
+    <title>Summary of Details</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,10 +11,12 @@
             padding: 20px;
             background: #e8f5e9;
         }
+
         h1 {
             text-align: center;
-            color: #2e7d32;
+            color: #388e3c;
         }
+
         .container {
             max-width: 800px;
             margin: auto;
@@ -23,117 +25,110 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .field {
+
+        .section {
             margin-bottom: 20px;
         }
-        .field label {
+
+        .section h2 {
+            color: #2e7d32;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #a5d6a7;
+            padding-bottom: 5px;
+        }
+
+        .section p {
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+
+        .section p span {
             font-weight: bold;
         }
+
         button {
-            display: block;
-            margin: auto;
-            background: #43a047;
+            background: #4caf50;
             color: #fff;
             border: none;
             padding: 10px 15px;
             cursor: pointer;
             border-radius: 4px;
-        }
-        button:hover {
-            background: #2e7d32;
-        }
-        #prediction {
-            text-align: center;
-            font-size: 1.2em;
-            color: #2e7d32;
             margin-top: 20px;
+            display: block;
+            width: 100%;
+            font-size: 1.2rem;
+        }
+
+        button:hover {
+            background: #388e3c;
         }
     </style>
 </head>
 <body>
-    <div id="google_translate_element"></div>
     <h1>Summary of Your Details</h1>
-    <div class="container" id="summaryContainer">
-        <!-- The summary will be displayed here -->
+    <div class="container">
+        <div class="section" id="personalDetails">
+            <h2>Personal Details</h2>
+            <p><span>Name:</span> <span id="name"></span></p>
+            <p><span>Age:</span> <span id="age"></span></p>
+            <p><span>Location Constraints:</span> <span id="location"></span></p>
+            <p><span>Languages Known:</span> <span id="languages"></span></p>
+            <p><span>Health Constraints:</span> <span id="health"></span></p>
+        </div>
+
+        <div class="section" id="educationalDetails">
+            <h2>Educational Details</h2>
+            <p><span>Current Education Level:</span> <span id="education"></span></p>
+            <p><span>Specialization:</span> <span id="specialization"></span></p>
+            <p><span>Past Achievements:</span> <span id="achievements"></span></p>
+        </div>
+
+        <div class="section" id="careerDetails">
+            <h2>Career and Aspirational Details</h2>
+            <p><span>Preferred Industries:</span> <span id="preferredIndustry"></span></p>
+            <p><span>Career Aspirations:</span> <span id="careerAspirations"></span></p>
+            <p><span>Skills and Strengths:</span> <span id="skills"></span></p>
+            <p><span>Financial Constraints:</span> <span id="financialConstraints"></span></p>
+        </div>
+
+        <button onclick="finish()">Finish</button>
     </div>
-    <div id="prediction">
-        <!-- The prediction result will be displayed here -->
-    </div>
-    <button onclick="restart()">Restart</button>
 
     <script>
-        // Function to load data from sessionStorage and display it
-        function loadSummary() {
-            const container = document.getElementById('summaryContainer');
-            const formKeys = ['personalForm', 'educationForm', 'careerForm', 'skillsForm', 'practicalForm'];
-            let summaryHTML = '';
+        // Function to display the summary of details from sessionStorage
+        function displaySummary() {
+            const personalForm = JSON.parse(sessionStorage.getItem("personalForm") || "{}");
+            const educationForm = JSON.parse(sessionStorage.getItem("educationForm") || "{}");
+            const careerForm = JSON.parse(sessionStorage.getItem("careerForm") || "{}");
 
-            const userInput = {};
+            // Personal Details
+            document.getElementById("name").textContent = personalForm.name || "N/A";
+            document.getElementById("age").textContent = personalForm.age || "N/A";
+            document.getElementById("location").textContent = personalForm.location || "N/A";
+            document.getElementById("languages").textContent = (personalForm.languages || []).join(", ");
+            document.getElementById("health").textContent = personalForm.health || "N/A";
 
-            formKeys.forEach(formKey => {
-                const formData = JSON.parse(sessionStorage.getItem(formKey));
-                if (formData) {
-                    summaryHTML += '<div class="field">';
-                    summaryHTML += <h3>${capitalize(formKey.replace('Form', '').replace(/([A-Z])/g, ' $1'))}:</h3>;
-                    Object.keys(formData).forEach(key => {
-                        const value = Array.isArray(formData[key]) ? formData[key].join(', ') : formData[key];
-                        summaryHTML += <p><label>${capitalize(key)}:</label> ${value}</p>;
-                        userInput[key] = value; // Collect data for prediction
-                    });
-                    summaryHTML += '</div>';
-                }
-            });
+            // Educational Details
+            document.getElementById("education").textContent = educationForm.education || "N/A";
+            document.getElementById("specialization").textContent = educationForm.specialization || "N/A";
+            document.getElementById("achievements").textContent = educationForm.achievements || "N/A";
 
-            container.innerHTML = summaryHTML || '<p>No data found. Please complete the forms.</p>';
-
-            // Fetch the prediction based on user input
-            if (Object.keys(userInput).length > 0) {
-                fetchPrediction(userInput);
-            }
+            // Career Details
+            document.getElementById("preferredIndustry").textContent = (careerForm.preferredIndustry || []).join(", ");
+            document.getElementById("careerAspirations").textContent = careerForm.careerAspirations || "N/A";
+            document.getElementById("skills").textContent = (careerForm.skills || []).join(", ");
+            document.getElementById("financialConstraints").textContent = careerForm.financialConstraints || "N/A";
         }
 
-        // Helper function to capitalize text
-        function capitalize(text) {
-            return text.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+        // Function to complete the process
+        function finish() {
+            alert("Thank you for completing the form!");
+            sessionStorage.clear(); // Clear sessionStorage
+            window.location.href = "index.html"; // Redirect to the first page or home
         }
 
-        // Function to fetch the prediction from the backend
-        async function fetchPrediction(userInput) {
-            try {
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userInput)
-                });
-
-                const result = await response.json();
-                const predictionDiv = document.getElementById('prediction');
-
-                if (result.prediction) {
-                    predictionDiv.textContent = Recommended Profession: ${result.prediction};
-                } else {
-                    predictionDiv.textContent = Error: ${result.error};
-                }
-            } catch (error) {
-                document.getElementById('prediction').textContent = Error fetching prediction: ${error.message};
-            }
-        }
-
-        // Restart the flow
-        function restart() {
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        }
-
-        // Load the summary on page load
-        document.addEventListener('DOMContentLoaded', loadSummary);
-
-        // Google Translate Integration
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
-        }
+        // Call the function on page load
+        displaySummary();
     </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <script src="bj.js"></script>
 </body>
 </html>
